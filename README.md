@@ -2,7 +2,7 @@
 
 # KYC & Identity Risk Intelligence Platform
 
-The companion platform to [Real-Time Fraud Detection Pipeline](#).
+The companion platform to [Real-Time Fraud Detection Pipeline](https://github.com/Mubrix2/ai-fraud-detection-pipeline).
 Where Project 1 asks "is this transaction fraudulent?", this platform
 asks "is this person who they claim to be, and how risky are they to
 onboard?" — covering the customer risk lifecycle from application
