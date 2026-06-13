@@ -30,6 +30,7 @@ pytesseract==0.3.13
 pytest==8.3.2
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
+python-multipart==0.0.32
 pytz==2026.2
 PyYAML==6.0.3
 rapidfuzz==3.9.6
