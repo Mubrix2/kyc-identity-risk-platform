@@ -15,6 +15,7 @@ import pytesseract
 from PIL import Image
 
 from app.config import TESSERACT_CMD
+from PIL import Image, UnidentifiedImageError
 
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
 
@@ -49,13 +50,19 @@ def extract_identity_fields(raw_text: str) -> dict:
     return result
 
 
-def process_document(image: Union[str, Path, bytes]) -> dict:
-    """Full pipeline: image → raw text + structured fields + confidence."""
-    raw_text = extract_text(image)
+def process_document(image) -> dict:
+    try:
+        raw_text = extract_text(image)
+    except UnidentifiedImageError:
+        # Unreadable upload → zero extraction confidence, all fields
+        # mismatch downstream → feeds into risk score as a genuine signal,
+        # not a crash.
+        return {
+            "raw_text": "",
+            "extracted_fields": {"name": None, "dob": None, "id_number": None},
+            "extraction_confidence": 0.0,
+        }
+
     fields = extract_identity_fields(raw_text)
     confidence = round(sum(1 for v in fields.values() if v) / len(fields), 2)
-    return {
-        "raw_text": raw_text.strip(),
-        "extracted_fields": fields,
-        "extraction_confidence": confidence,
-    }
+    return {"raw_text": raw_text.strip(), "extracted_fields": fields, "extraction_confidence": confidence}
