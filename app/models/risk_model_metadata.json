@@ -1,0 +1,16 @@
+{
+  "roc_auc": 0.9522,
+  "best_iteration": 88,
+  "features": [
+    "name_match_score",
+    "document_quality_score",
+    "dob_mismatch",
+    "sanctions_name_similarity",
+    "is_pep_match",
+    "email_domain_age_days",
+    "phone_country_mismatch",
+    "ip_country_mismatch",
+    "device_fingerprint_reuse",
+    "onboarding_attempts_24h"
+  ]
+}
