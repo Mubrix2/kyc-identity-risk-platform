@@ -20,13 +20,21 @@ from PIL import Image, UnidentifiedImageError
 pytesseract.pytesseract.tesseract_cmd = TESSERACT_CMD
 
 FIELD_PATTERNS = {
-    "name": re.compile(r"(?:NAME|FULL NAME)\s*[:\-]?\s*([A-Z][A-Z\s'\-]+)", re.IGNORECASE),
-    # Three digit groups with 0-2 non-digit chars between them — tolerates
-    # "/" being read as space, "-", "|", "l", "1", or dropped entirely.
-    # Real scanned IDs have the same OCR noise around separators.
-    "dob": re.compile(r"(?:DOB|DATE OF BIRTH)\s*[:\-]?\s*(\d{2})\D{0,2}(\d{2})\D{0,2}(\d{4})", re.IGNORECASE),
-    "id_number": re.compile(r"(?:NIN|ID NO|ID NUMBER)\s*[:\-]?\s*([A-Z0-9]{6,15})", re.IGNORECASE),
+    # Use [A-Z '-]+ (space, not \s) so matching stops at newlines
+    "name": re.compile(
+        r"(?:NAME|FULL NAME)\s*[:\-]?\s*([A-Z][A-Z '\-]+)",
+        re.IGNORECASE
+    ),
+    "dob": re.compile(
+        r"(?:DOB|DATE OF BIRTH)\s*[:\-]?\s*(\d{2})\D{0,2}(\d{2})\D{0,2}(\d{4})",
+        re.IGNORECASE
+    ),
+    "id_number": re.compile(
+        r"(?:NIN|ID NO|ID NUMBER)\s*[:\-]?\s*([A-Z0-9]{6,15})",
+        re.IGNORECASE
+    ),
 }
+
 
 
 def extract_text(image: Union[str, Path, bytes]) -> str:
@@ -46,7 +54,9 @@ def extract_identity_fields(raw_text: str) -> dict:
         elif field == "dob":
             result[field] = f"{match.group(1)}/{match.group(2)}/{match.group(3)}"
         else:
-            result[field] = match.group(1).strip().upper()
+            # Take first line only — belt-and-suspenders against multiline capture
+            value = match.group(1).strip().upper()
+            result[field] = value.split('\n')[0].strip()
     return result
 
 
