@@ -7,8 +7,8 @@ export default defineConfig({
   server: {
     port: 5174,  // different from Project 1's 5173 — run both simultaneously
     proxy: {
-      '/api': { target: 'http://localhost:8001', changeOrigin: true },
-      '/health': { target: 'http://localhost:8001', changeOrigin: true },
+      '/api': { target: 'http://localhost:8000', changeOrigin: true },
+      '/health': { target: 'http://localhost:8000', changeOrigin: true },
     },
   },
 })
