@@ -7,6 +7,7 @@ Where Project 1 asks "is this transaction fraudulent?", this platform asks
 ---
 
 **Live Demo:** [kyc-identity-risk-platform.vercel.app](https://kyc-identity-risk-platform.vercel.app/)
+
 **API Docs:** [kyc-identity-risk-platform.onrender.com/docs](https://kyc-identity-risk-platform.onrender.com/)
 
 ---
