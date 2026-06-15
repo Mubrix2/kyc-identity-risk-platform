@@ -1,10 +1,11 @@
 // frontend/src/App.jsx
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, lazy, Suspense } from 'react'
 import { listCases, getStats, checkHealth } from './api/client'
 import StatsBar from './components/StatsBar'
 import SubmitForm from './components/SubmitForm'
 import CaseTable from './components/CaseTable'
-import CaseDetailModal from './components/CaseDetailModal'
+
+const CaseDetailModal = lazy(() => import('./components/CaseDetailModal'))
 import ErrorBoundary from './components/ErrorBoundary'
 
 export default function App() {
@@ -41,10 +42,22 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gray-50">
       {selected && (
-        <ErrorBoundary onClose={() => setSelected(null)}>
-          <CaseDetailModal caseData={selected} onClose={() => setSelected(null)} onOverride={refresh} />
-        </ErrorBoundary>
-      )}
+  <ErrorBoundary onClose={() => setSelected(null)}>
+    <Suspense fallback={
+      <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-xl p-6 text-sm text-gray-500">
+          Loading case detail...
+        </div>
+      </div>
+    }>
+      <CaseDetailModal
+        caseData={selected}
+        onClose={() => setSelected(null)}
+        onOverride={refresh}
+      />
+    </Suspense>
+  </ErrorBoundary>
+)}
 
       <header className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="max-w-screen-xl mx-auto flex justify-between items-center">

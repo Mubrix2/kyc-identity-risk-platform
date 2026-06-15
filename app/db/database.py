@@ -14,19 +14,20 @@ Why psycopg (v3) over psycopg2:
   async support (not used yet, but available for future upgrade)
   and better type handling.
 """
-from sqlalchemy import create_engine
+# app/db/database.py — full updated version
+import logging
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import declarative_base, sessionmaker
-
 from app.config import DATABASE_URL
 
-engine = create_engine(DATABASE_URL, pool_size=5, max_overflow=10)
-SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+logger = logging.getLogger(__name__)
 
-Base = declarative_base()
+engine       = create_engine(DATABASE_URL, pool_size=5, max_overflow=10)
+SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False)
+Base         = declarative_base()
 
 
 def get_db():
-    """FastAPI dependency — yields a session, closes it after the request."""
     db = SessionLocal()
     try:
         yield db
@@ -35,6 +36,14 @@ def get_db():
 
 
 def init_db() -> None:
-    """Create all tables. Called at startup — idempotent."""
-    from app.db import models  # noqa: F401 — registers models with Base
-    Base.metadata.create_all(bind=engine)
+    from app.db import models  # noqa: F401
+
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("✅ PostgreSQL tables ready")
+    except Exception as e:
+        logger.error(
+            f"❌ Database init failed: {e}\n"
+            f"   If this is a permissions error, run in Render PostgreSQL Shell:\n"
+            f"   GRANT ALL ON SCHEMA public TO kyc_user;"
+        )

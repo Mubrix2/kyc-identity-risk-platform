@@ -20,9 +20,19 @@ POSTGRES_DB: str       = os.getenv("POSTGRES_DB", "kyc_platform")
 POSTGRES_USER: str     = os.getenv("POSTGRES_USER", "kyc_user")
 POSTGRES_PASSWORD: str = os.getenv("POSTGRES_PASSWORD", "")
 
-DATABASE_URL: str = (
+# Accept DATABASE_URL directly (Render/Supabase provide this)
+# Fall back to constructing from individual components (local dev)
+_raw_db_url: str = os.getenv("DATABASE_URL") or (
     f"postgresql+psycopg://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
     f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+)
+
+# Render provides postgres:// — SQLAlchemy + psycopg3 needs postgresql+psycopg://
+# This replacement is safe to run even when the URL is already correct
+DATABASE_URL: str = _raw_db_url.replace(
+    "postgres://", "postgresql+psycopg://"
+).replace(
+    "postgresql://", "postgresql+psycopg://"
 )
 
 # ── Kafka ──────────────────────────────────────────────────────────────────────
