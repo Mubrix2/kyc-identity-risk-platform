@@ -12,7 +12,7 @@ Where Project 1 asks "is this transaction fraudulent?", this platform asks
 
 ---
 
-[!Demo](demo.gif)
+![Demo](demo.gif)
 
 ---
 
