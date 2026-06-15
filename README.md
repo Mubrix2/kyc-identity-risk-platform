@@ -65,7 +65,7 @@ Kafka
 │
 ▼
 React Compliance Reviewer Dashboard
-+ Manual Override
+
 ---
 
 ## Architecture
