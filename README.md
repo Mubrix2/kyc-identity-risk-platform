@@ -14,31 +14,44 @@ Where Project 1 asks "is this transaction fraudulent?", this platform asks
 
 ## The Pipeline
 Application submitted (form + ID document image)
-↓
+ │
+ ▼
 Pydantic v2 validation (extra='forbid')
-↓
+ │
+ ▼
 OCR Extraction (Tesseract) → extracts name, DOB, ID number from document
-↓
+ │
+ ▼
 Field Cross-Validation (RapidFuzz) → declared vs extracted comparison
-↓
+ │
+ ▼
 Hard Rule: Sanctions Match → REJECT immediately (skip ML)
-↓
+ │
+ ▼
 PEP Screening → flag for Enhanced Due Diligence
-↓
+ │
+ ▼
 Risk Feature Engineering (10 features)
-↓
+ │
+ ▼
 XGBoost Risk Model → risk_probability (0–1)
-↓
+ │
+ ▼
 Decision Rules (Rules consume ML output, can only escalate)
-↓
+ │
+ ▼
 3-Tier Decision: APPROVE / REVIEW / REJECT
-↓
+ │
+ ▼
 SHAP Explanation (exact TreeExplainer attributions)
-↓
+ │
+ ▼
 PostgreSQL Audit Log (append-only, immutable)
-↓
+ │
+ ▼
 Kafka (kyc-events → kyc-results) — additive, not required for scoring
-↓
+ │
+ ▼
 React Compliance Reviewer Dashboard + Manual Override
 
 ---
