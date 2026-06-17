@@ -62,7 +62,13 @@ def assess_application(record_id: str, application: dict, document_image: bytes)
     risk_result = score_application(features)
 
     # 7. Rules engine — sanctions/PEP can only escalate
-    rules_result = rules_engine.apply_rules(risk_result["decision"], screening)
+    rules_result = rules_engine.apply_rules(
+    risk_result["decision"],
+    screening,
+    face_result=None,
+    field_validation=validation,   # ← pass field validation here
+    )
+    
     final_decision = rules_result["final_decision"]
 
     # 8. SHAP
